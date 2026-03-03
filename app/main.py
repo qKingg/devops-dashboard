@@ -2,7 +2,7 @@ from flask import Flask
 from .config import Config
 from .models import db
 from .routes import api
-
+from sqlalchemy import inspect
 
 def create_app():
     """
@@ -23,6 +23,8 @@ def create_app():
 
     # Create tables if they don't exist
     with app.app_context():
-        db.create_all()
+        inspector = inspect(db.engine)
+        if not inspector.has_table("metrics"):
+            db.create_all()
 
     return app

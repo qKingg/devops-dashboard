@@ -19,13 +19,13 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata: /var/lib/posgresql/data
+      - pgdata:/var/lib/posgresql/data
     healthcheck:
-      test: ["CMD_SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 3s
       retries: 5
     restart: unless-stopped
 
-  volumes:
-    pgdata:
+volumes:
+  pgdata:
