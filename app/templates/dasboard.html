@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 2rem;
+        }
+        h1 { margin-bottom: 0.5rem; }
+        .subtitle { color: #64748b; margin-bottom: 2rem; font-size: 0.9rem; }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+        }
+        .card-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
+        .card-value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
+        .healthy { color: #4ade80; }
+        .unhealthy { color: #f87171; }
+        .neutral { color: #60a5fa; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td { padding: 0.75rem 1rem; text-align: left; }
+        th { background: #334155; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
+        td { border-top: 1px solid #334155; }
+        #status { color: #64748b; font-size: 0.85rem; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>DevOps Dashboard</h1>
+    <p class="subtitle">System metrics and health status</p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-label">App Status</div>
+            <div class="card-value" id="app-status">Loading...</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Database</div>
+            <div class="card-value" id="db-status">Loading...</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Version</div>
+            <div class="card-value neutral" id="app-version">-</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Metrics Count</div>
+            <div class="card-value neutral" id="metrics-count">-</div>
+        </div>
+    </div>
+
+    <h2 style="margin-bottom: 1rem;">Recent Metrics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Unit</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="metrics-body">
+            <tr><td colspan="4" style="color: #64748b;">Loading...</td></tr>
+        </tbody>
+    </table>
+    <p id="status"></p>
+
+    <script>
+        async function fetchHealth() {
+            try {
+                const res = await fetch("/health");
+                const data = await res.json();
+
+                const appEl = document.getElementById("app-status");
+                appEl.textContent = data.status;
+                appEl.className = "card-value " + (data.status === "healthy" ? "healthy" : "unhealthy");
+
+                const dbEl = document.getElementById("db-status");
+                dbEl.textContent = data.database === "healthy" ? "Connected" : "Error";
+                dbEl.className = "card-value " + (data.database === "healthy" ? "healthy" : "unhealthy");
+
+                document.getElementById("app-version").textContent = data.version;
+            } catch (e) {
+                document.getElementById("app-status").textContent = "Unreachable";
+                document.getElementById("app-status").className = "card-value unhealthy";
+            }
+        }
+
+        async function fetchMetrics() {
+            try {
+                const res = await fetch("/api/metrics?limit=20");
+                const data = await res.json();
+
+                document.getElementById("metrics-count").textContent = data.length;
+
+                const tbody = document.getElementById("metrics-body");
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="color: #64748b;">No metrics yet. POST to /api/metrics to add some.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(m => `
+                    <tr>
+                        <td>${m.metric_name}</td>
+                        <td>${m.metric_value}</td>
+                        <td>${m.unit || "-"}</td>
+                        <td>${new Date(m.timestamp).toLocaleString()}</td>
+                    </tr>
+                `).join("");
+            } catch (e) {
+                document.getElementById("metrics-body").innerHTML =
+                    '<tr><td colspan="4" style="color: #f87171;">Failed to load metrics</td></tr>';
+            }
+        }
+
+        // Load on page open, then refresh every 30 seconds
+        fetchHealth();
+        fetchMetrics();
+        setInterval(fetchHealth, 30000);
+        setInterval(fetchMetrics, 30000);
+
+        document.getElementById("status").textContent = "Auto-refreshes every 30s";
+    </script>
+</body>
+</html>
