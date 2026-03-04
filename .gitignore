@@ -1,5 +1,12 @@
 ```
 ```
+#Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!terraform.tfvars.example
+.terraform.lock.hcl
 
 .env
 __pycache__/
