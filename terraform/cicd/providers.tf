@@ -6,19 +6,14 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
-    }
   }
 
   backend "s3" {
-    bucket         = "devops-journey-tfstate-catalin"
-    key            = "devops-dashboard/terraform.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
+    bucket  = "devops-journey-tfstate-catalin"
+    key     = "devops-dashboard/cicd.tfstate"
+    region  = "eu-central-1"
+    encrypt = true
   }
-
 }
 
 provider "aws" {
