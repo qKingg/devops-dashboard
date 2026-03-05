@@ -23,8 +23,9 @@ def create_app():
 
     # Create tables if they don't exist
     with app.app_context():
-        inspector = inspect(db.engine)
-        if not inspector.has_table("metrics"):
+        try:
             db.create_all()
+        except Exception:
+            db.session.rollback()
 
     return app
