@@ -17,6 +17,10 @@ resource "aws_ecs_task_definition" "default" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   
 
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
+
   container_definitions = jsonencode([
     {
       name      = "${var.project_name}-container"
@@ -64,6 +68,10 @@ resource "aws_ecs_service" "default" {
     target_group_arn = aws_lb_target_group.app_tg.arn
     container_name   = "${var.project_name}-container"
     container_port   = var.container_port
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
   }
 
   tags = {
