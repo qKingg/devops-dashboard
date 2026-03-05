@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'app/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy.yml'
 
 permissions:
   id-token: write
