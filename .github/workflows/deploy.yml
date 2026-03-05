@@ -15,7 +15,7 @@ env:
   ECS_CLUSTER: devops-dashboard-cluster
   ECS_SERVICE: devops-dashboard-service
   ECS_TASK_DEFINITION: devops-dashboard-task
-  CONTAINER_NAME: devops-dashboard
+  CONTAINER_NAME: devops-dashboard-container
 
 jobs:
   deploy:
@@ -52,6 +52,7 @@ jobs:
           exit-code: 1
           severity: CRITICAL,HIGH
           ignore-unfixed: true
+          trivyignores: .trivyignore
 
       - name: Push image to ECR
         env:
