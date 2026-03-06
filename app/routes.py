@@ -28,7 +28,7 @@ def health():
 
 @api.route("/")
 def dashboard():
-    """Serves the HTML dashboard page."""
+    """Render HTML template"""
     return render_template("dashboard.html")
 
 
