@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "default" {
   memory                   = var.container_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
-  
+
 
   lifecycle {
     ignore_changes = [container_definitions]
@@ -23,8 +23,8 @@ resource "aws_ecs_task_definition" "default" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project_name}-container"
-      image     = "${aws_ecr_repository.app_repo.repository_url}:ab32303489bc0996ae91f6e59f07e390b666c5e7"
+      name  = "${var.project_name}-container"
+      image = "${aws_ecr_repository.app_repo.repository_url}:ab32303489bc0996ae91f6e59f07e390b666c5e7"
       portMappings = [
         {
           containerPort = var.container_port
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "default" {
       }]
       logConfiguration = {
         logDriver = "awslogs"
-        options   = {
+        options = {
           "awslogs-group"         = aws_cloudwatch_log_group.default.name
           "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "${var.project_name}-logs"
@@ -55,11 +55,11 @@ resource "aws_ecs_service" "default" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-  depends_on = [ aws_lb_listener.app_listener ]
+  depends_on = [aws_lb_listener.app_listener]
 
   network_configuration {
-    subnets         = aws_subnet.private[*].id
-    security_groups = [aws_security_group.ecs.id]
+    subnets          = aws_subnet.private[*].id
+    security_groups  = [aws_security_group.ecs.id]
     assign_public_ip = false
   }
 

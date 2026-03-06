@@ -76,3 +76,8 @@ variable "desired_count" {
   type        = number
   default     = 1
 }
+
+variable "alert_email" {
+  description = "Email address for SNS alerts"
+  type        = string
+}

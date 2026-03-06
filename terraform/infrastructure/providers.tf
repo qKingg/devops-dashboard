@@ -13,10 +13,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "devops-journey-tfstate-catalin"
-    key            = "devops-dashboard/terraform.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
+    bucket  = "devops-journey-tfstate-catalin"
+    key     = "devops-dashboard/terraform.tfstate"
+    region  = "eu-central-1"
+    encrypt = true
   }
 
 }
