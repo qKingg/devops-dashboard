@@ -44,3 +44,21 @@ resource "aws_iam_role" "ecs_task_role" {
     Name = "${var.project_name}-ecs-task-role"
   }
 }
+
+resource "aws_iam_role_policy" "ecs_ssm_access" {
+  name = "${var.project_name}-ecs-ssm-access"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameters"
+        ]
+        Resource = aws_ssm_parameter.db_password.arn
+      }
+    ]
+  })
+}

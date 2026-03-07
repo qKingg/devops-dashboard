@@ -32,10 +32,26 @@ resource "aws_ecs_task_definition" "default" {
           protocol      = "tcp"
         }
       ]
-      environment = [{
-        name  = "DATABASE_URL"
-        value = "postgresql+psycopg://${var.db_username}:${random_password.db_password.result}@${aws_db_instance.default.endpoint}/${var.db_name}"
-      }]
+      environment = [
+        {
+        name = "DB_HOST"
+        value = aws_db_instance.default.address
+        },
+        {
+        name = "DB_NAME"
+        value = var.db_name
+        },
+        {
+        name = "DB_USER"
+        value = var.db_username
+        }
+      ]
+      secrets = [
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = aws_ssm_parameter.db_password.arn
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
