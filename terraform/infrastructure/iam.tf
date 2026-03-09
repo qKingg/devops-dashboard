@@ -62,3 +62,24 @@ resource "aws_iam_role_policy" "ecs_ssm_access" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "ecs_cloudwatch_read" {
+  name = "${var.project_name}-ecs-cloudwatch-read"
+  role = aws_iam_role.ecs_task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:GetMetricStatistics",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "rds:DescribeDBInstances",
+          "rds:ListTagsForResource"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}

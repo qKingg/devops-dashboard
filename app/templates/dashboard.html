@@ -11,127 +11,294 @@
             background: #0f172a;
             color: #e2e8f0;
             padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        h1 { margin-bottom: 0.5rem; }
+        h1 { margin-bottom: 0.25rem; }
         .subtitle { color: #64748b; margin-bottom: 2rem; font-size: 0.9rem; }
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+        /* Top status bar */
+        .status-bar {
+            display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 999px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.85rem;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-green { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+        .dot-red { background: #f87171; box-shadow: 0 0 6px #f87171; }
+        .dot-gray { background: #64748b; }
+
+        /* Section groups */
+        .section {
+            margin-bottom: 2rem;
+        }
+        .section-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            padding-left: 0.25rem;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
         }
         .card {
             background: #1e293b;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
             border: 1px solid #334155;
+            transition: border-color 0.2s;
         }
-        .card-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
-        .card-value { font-size: 2rem; font-weight: 700; margin: 0.5rem 0; }
+        .card:hover { border-color: #475569; }
+        .card-label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.4rem 0 0.15rem;
+            line-height: 1;
+        }
+        .card-unit { color: #64748b; font-size: 0.8rem; }
         .healthy { color: #4ade80; }
+        .warning { color: #fbbf24; }
         .unhealthy { color: #f87171; }
         .neutral { color: #60a5fa; }
+
+        /* History table */
+        .table-wrapper {
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #1e293b;
-            border-radius: 8px;
-            overflow: hidden;
         }
-        th, td { padding: 0.75rem 1rem; text-align: left; }
-        th { background: #334155; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
-        td { border-top: 1px solid #334155; }
-        #status { color: #64748b; font-size: 0.85rem; margin-top: 1rem; }
+        th, td { padding: 0.65rem 1rem; text-align: left; }
+        th { background: #334155; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { border-top: 1px solid #1e293b; font-size: 0.9rem; }
+        tr:nth-child(even) td { background: rgba(51,65,85,0.25); }
+        .metric-tag {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .tag-ecs { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .tag-rds { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .tag-alb { background: rgba(74,222,128,0.15); color: #4ade80; }
+
+        #status { color: #475569; font-size: 0.8rem; margin-top: 1rem; text-align: right; }
     </style>
 </head>
 <body>
     <h1>DevOps Dashboard</h1>
     <p class="subtitle">System metrics and health status</p>
 
-    <div class="cards">
-        <div class="card">
-            <div class="card-label">App Status</div>
-            <div class="card-value" id="app-status">Loading...</div>
+    <!-- Status bar -->
+    <div class="status-bar">
+        <div class="status-pill">
+            <span class="status-dot dot-gray" id="app-dot"></span>
+            <span>App: <strong id="app-status">...</strong></span>
         </div>
-        <div class="card">
-            <div class="card-label">Database</div>
-            <div class="card-value" id="db-status">Loading...</div>
+        <div class="status-pill">
+            <span class="status-dot dot-gray" id="db-dot"></span>
+            <span>Database: <strong id="db-status">...</strong></span>
         </div>
-        <div class="card">
-            <div class="card-label">Version</div>
-            <div class="card-value neutral" id="app-version">-</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Metrics Count</div>
-            <div class="card-value neutral" id="metrics-count">-</div>
+        <div class="status-pill">
+            <span class="status-dot dot-gray"></span>
+            <span>Version: <strong id="app-version">-</strong></span>
         </div>
     </div>
 
-    <h2 style="margin-bottom: 1rem;">Recent Metrics</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Metric</th>
-                <th>Value</th>
-                <th>Unit</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody id="metrics-body">
-            <tr><td colspan="4" style="color: #64748b;">Loading...</td></tr>
-        </tbody>
-    </table>
+    <!-- ECS Compute -->
+    <div class="section">
+        <div class="section-header">ECS Compute</div>
+        <div class="cards">
+            <div class="card">
+                <div class="card-label">CPU Utilization</div>
+                <div class="card-value neutral" id="ecs-cpu">-</div>
+                <div class="card-unit">%</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Memory Utilization</div>
+                <div class="card-value neutral" id="ecs-mem">-</div>
+                <div class="card-unit">%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RDS Database -->
+    <div class="section">
+        <div class="section-header">RDS Database</div>
+        <div class="cards">
+            <div class="card">
+                <div class="card-label">Free Storage</div>
+                <div class="card-value neutral" id="rds-storage">-</div>
+                <div class="card-unit">GB</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALB Traffic -->
+    <div class="section">
+        <div class="section-header">ALB Traffic</div>
+        <div class="cards">
+            <div class="card">
+                <div class="card-label">Request Count</div>
+                <div class="card-value neutral" id="alb-requests">-</div>
+                <div class="card-unit">requests</div>
+            </div>
+            <div class="card">
+                <div class="card-label">5XX Errors</div>
+                <div class="card-value healthy" id="alb-5xx">-</div>
+                <div class="card-unit">errors</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History table -->
+    <div class="section">
+        <div class="section-header">Recent Metrics</div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Unit</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="metrics-body">
+                    <tr><td colspan="4" style="color: #64748b;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <p id="status"></p>
 
     <script>
+        const METRIC_MAP = {
+            ecs_cpu_utilization:    { el: "ecs-cpu",      tag: "ecs" },
+            ecs_memory_utilization: { el: "ecs-mem",      tag: "ecs" },
+            rds_free_storage_gb:    { el: "rds-storage",  tag: "rds" },
+            alb_request_count:      { el: "alb-requests", tag: "alb" },
+            alb_5xx_errors:         { el: "alb-5xx",      tag: "alb" },
+        };
+
+        function colorForMetric(name, value) {
+            if (name === "ecs_cpu_utilization" || name === "ecs_memory_utilization") {
+                if (value > 80) return "unhealthy";
+                if (value > 60) return "warning";
+                return "healthy";
+            }
+            if (name === "rds_free_storage_gb") {
+                if (value < 5) return "unhealthy";
+                if (value < 10) return "warning";
+                return "healthy";
+            }
+            if (name === "alb_5xx_errors") {
+                if (value > 10) return "unhealthy";
+                if (value > 0) return "warning";
+                return "healthy";
+            }
+            return "neutral";
+        }
+
+        function tagHtml(name) {
+            const info = METRIC_MAP[name];
+            if (!info) return name;
+            const label = name.replace(/_/g, " ");
+            return `<span class="metric-tag tag-${info.tag}">${info.tag.toUpperCase()}</span> ${label}`;
+        }
+
         async function fetchHealth() {
             try {
                 const res = await fetch("/health");
                 const data = await res.json();
 
                 const appEl = document.getElementById("app-status");
+                const appDot = document.getElementById("app-dot");
                 appEl.textContent = data.status;
-                appEl.className = "card-value " + (data.status === "healthy" ? "healthy" : "unhealthy");
+                appDot.className = "status-dot " + (data.status === "healthy" ? "dot-green" : "dot-red");
 
                 const dbEl = document.getElementById("db-status");
+                const dbDot = document.getElementById("db-dot");
                 dbEl.textContent = data.database === "healthy" ? "Connected" : "Error";
-                dbEl.className = "card-value " + (data.database === "healthy" ? "healthy" : "unhealthy");
+                dbDot.className = "status-dot " + (data.database === "healthy" ? "dot-green" : "dot-red");
 
                 document.getElementById("app-version").textContent = data.version;
-            } catch (e) {
+            } catch {
                 document.getElementById("app-status").textContent = "Unreachable";
-                document.getElementById("app-status").className = "card-value unhealthy";
+                document.getElementById("app-dot").className = "status-dot dot-red";
             }
         }
 
         async function fetchMetrics() {
             try {
-                const res = await fetch("/api/metrics?limit=20");
+                const res = await fetch("/api/metrics?limit=50");
                 const data = await res.json();
 
-                document.getElementById("metrics-count").textContent = data.length;
+                // Find latest value per metric name
+                const latest = {};
+                for (const m of data) {
+                    if (!latest[m.metric_name]) {
+                        latest[m.metric_name] = m;
+                    }
+                }
 
+                // Update cards
+                for (const [name, info] of Object.entries(METRIC_MAP)) {
+                    const el = document.getElementById(info.el);
+                    if (latest[name]) {
+                        const val = latest[name].metric_value;
+                        el.textContent = val;
+                        el.className = "card-value " + colorForMetric(name, val);
+                    }
+                }
+
+                // Update table
                 const tbody = document.getElementById("metrics-body");
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="color: #64748b;">No metrics yet. POST to /api/metrics to add some.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" style="color: #64748b;">No metrics yet. POST to /api/metrics to add data.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = data.map(m => `
                     <tr>
-                        <td>${m.metric_name}</td>
-                        <td>${m.metric_value}</td>
+                        <td>${tagHtml(m.metric_name)}</td>
+                        <td><strong>${m.metric_value}</strong></td>
                         <td>${m.unit || "-"}</td>
                         <td>${new Date(m.timestamp).toLocaleString()}</td>
                     </tr>
                 `).join("");
-            } catch (e) {
+            } catch {
                 document.getElementById("metrics-body").innerHTML =
                     '<tr><td colspan="4" style="color: #f87171;">Failed to load metrics</td></tr>';
             }
         }
 
-        // Load on page open, then refresh every 30 seconds
         fetchHealth();
         fetchMetrics();
         setInterval(fetchHealth, 30000);

@@ -24,4 +24,4 @@ class Config:
 
     # App settings
     APP_NAME = os.getenv("APP_NAME", "DevOps Dashboard")
-    APP_VERSION = os.getenv("APP_VERSION", "0.1.0")
+    APP_VERSION = os.getenv("APP_VERSION", "0.1.1")
