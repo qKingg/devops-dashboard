@@ -81,3 +81,8 @@ variable "alert_email" {
   description = "Email address for SNS alerts"
   type        = string
 }
+
+variable "domain_name" {
+  description = "Domain name for Route53"
+  type        = string
+}

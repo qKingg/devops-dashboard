@@ -71,7 +71,7 @@ resource "aws_ecs_service" "default" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-  depends_on = [aws_lb_listener.app_listener]
+  depends_on = [aws_lb_listener.app_listener_http]
 
   network_configuration {
     subnets          = aws_subnet.private[*].id
