@@ -8,7 +8,7 @@ api = Blueprint("api", __name__)
 @api.route("/health")
 def health():
     """
-    Health check endpoint. ALB and ECS use this to know if the container
+    Health check endpoint. ALB and ECS uses this to know if the container
     is alive and ready to serve traffic.
     Returns DB connectivity status so you can catch connection issues.
     """
