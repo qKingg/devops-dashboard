@@ -26,8 +26,8 @@ import boto3
 import requests
 
 # --- Configuration ---
-# APP_URL = os.getenv("APP_URL", "https://dashboard.catalinpatrut.com").rstrip("/")
-APP_URL = os.getenv("APP_URL", "http://localhost:5000").rstrip("/")
+APP_URL = os.getenv("APP_URL", "https://dashboard.catalinpatrut.com").rstrip("/")
+#APP_URL = os.getenv("APP_URL", "http://localhost:5000").rstrip("/")
 AWS_REGION = os.getenv("AWS_REGION", "eu-central-1")
 PROJECT_NAME = os.getenv("PROJECT_NAME", "devops-dashboard")
 
