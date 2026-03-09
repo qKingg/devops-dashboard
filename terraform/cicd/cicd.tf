@@ -71,6 +71,17 @@ resource "aws_iam_role_policy" "github_actions" {
         Resource = "*"
       },
       {
+        Sid    = "CloudWatchRead"
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:GetMetricStatistics",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "rds:DescribeDBInstances",
+          "rds:ListTagsForResource"
+        ]
+        Resource = "*"
+      },
+      {
         Sid      = "PassRoleToECS"
         Effect   = "Allow"
         Action   = ["iam:PassRole"]
