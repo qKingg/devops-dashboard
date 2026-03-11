@@ -37,6 +37,7 @@ resource "aws_db_instance" "default" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   db_subnet_group_name   = aws_db_subnet_group.default.name
   publicly_accessible    = false
+  storage_encrypted      = true
 
   tags = {
     Name = "${var.project_name}-rds-instance"
