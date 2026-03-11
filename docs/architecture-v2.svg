@@ -116,7 +116,7 @@
   <!-- ECS Cluster -->
   <rect x="300" y="340" width="510" height="100" rx="8" fill="#0f1724" stroke="#60a5fa" stroke-width="1.5" filter="url(#shadow)"/>
   <text x="555" y="362" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="700">ECS Fargate Service</text>
-  <text x="555" y="378" text-anchor="middle" fill="#64748b" font-size="9">Desired count: 2 • Auto-scaling on CPU > 70%</text>
+  <text x="555" y="378" text-anchor="middle" fill="#64748b" font-size="9">Desired count: 2 (HA layout)</text>
 
   <!-- Task 1 -->
   <rect x="320" y="390" width="170" height="40" rx="6" fill="#1a2744" stroke="#818cf8" stroke-width="1" filter="url(#shadow)"/>
@@ -131,7 +131,7 @@
   <!-- RDS -->
   <rect x="370" y="490" width="310" height="70" rx="8" fill="#1c2333" stroke="#f97316" stroke-width="1.5" filter="url(#shadow)"/>
   <text x="525" y="515" text-anchor="middle" fill="#f97316" font-size="13" font-weight="700">RDS PostgreSQL</text>
-  <text x="525" y="533" text-anchor="middle" fill="#94a3b8" font-size="9">db.t3.micro • Automated backups • Port 5432</text>
+  <text x="525" y="533" text-anchor="middle" fill="#94a3b8" font-size="9">db.t3.micro • Single-AZ • Port 5432</text>
   <text x="525" y="548" text-anchor="middle" fill="#64748b" font-size="9">SG: allow 5432 from ECS SG only</text>
 
   <!-- ALB to Tasks arrows -->
@@ -153,10 +153,10 @@
   <text x="975" y="133" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="700">ECR</text>
   <text x="975" y="151" text-anchor="middle" fill="#64748b" font-size="9">Container registry</text>
 
-  <!-- Secrets Manager -->
+  <!-- SSM Parameter Store -->
   <rect x="890" y="180" width="170" height="52" rx="8" fill="#1c2333" stroke="#fb923c" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="975" y="203" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="700">Secrets Manager</text>
-  <text x="975" y="221" text-anchor="middle" fill="#64748b" font-size="9">DB credentials, API keys</text>
+  <text x="975" y="203" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="700">SSM Parameter Store</text>
+  <text x="975" y="221" text-anchor="middle" fill="#64748b" font-size="9">DB password (SecureString)</text>
 
   <!-- CloudWatch -->
   <rect x="890" y="260" width="170" height="85" rx="8" fill="#1c2333" stroke="#22d3ee" stroke-width="1.5" filter="url(#shadow)"/>
@@ -179,7 +179,7 @@
   <line x1="190" y1="291" x2="890" y2="136" stroke="#60a5fa" stroke-width="1" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrowBlue)"/>
   <line x1="190" y1="391" x2="260" y2="391" stroke="#c084fc" stroke-width="1" stroke-dasharray="4,3" opacity="0.6" marker-end="url(#arrowPurple)"/>
 
-  <!-- Connection: ECS to Secrets Manager -->
+  <!-- Connection: ECS to SSM Parameter Store -->
   <line x1="810" y1="380" x2="890" y2="206" stroke="#fb923c" stroke-width="1" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrowOrange)"/>
 
   <!-- Connection: ECS to CloudWatch -->
@@ -205,7 +205,7 @@
   <text x="290" y="642" fill="#64748b" font-size="9">• ALB in public subnets — only entry point from internet</text>
   <text x="290" y="658" fill="#64748b" font-size="9">• ECS + RDS in private subnets — no direct internet access</text>
   <text x="290" y="674" fill="#64748b" font-size="9">• NAT Gateway — outbound only (ECR pulls, CloudWatch)</text>
-  <text x="290" y="690" fill="#64748b" font-size="9">• Secrets Manager — no hardcoded credentials in code or env vars</text>
+  <text x="290" y="690" fill="#64748b" font-size="9">• SSM Parameter Store — DB password encrypted via SecureString</text>
   <text x="290" y="706" fill="#64748b" font-size="9">• OIDC — GitHub Actions uses temporary STS credentials</text>
 
   <!-- Traffic flow annotations -->
