@@ -25,7 +25,7 @@ This project is built on production infrastructure patterns with deliberate cost
 
 | Decision | Current Setup | Production Change |
 |----------|--------------|-------------------|
-| **Availability** | Single Fargate task, no auto-scaling | 2+ tasks across AZs with auto-scaling. ALB, health checks, and multi-AZ subnets are already in place — requires a `desired_count` change. |
+| **Availability** | Single Fargate task, no auto-scaling | 2+ tasks across AZs with auto-scaling. ALB, health checks, and multi-AZ subnets are already in place. |
 | **NAT Gateway** | Single NAT in one AZ (~$32/mo) | One NAT per AZ for AZ failure resilience |
 | **Image tags** | Mutable ECR tags for dev flexibility | Immutable tags with git SHA to prevent tampering |
 | **Terraform** | Manual plan/apply | Automated plan on PR, apply on merge with approval gate |
