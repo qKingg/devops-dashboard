@@ -34,3 +34,4 @@ output "rds_password_ssm_parameter" {
   description = "SSM parameter name for the RDS password"
   value       = aws_ssm_parameter.db_password.name
 }
+

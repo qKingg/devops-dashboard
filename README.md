@@ -5,7 +5,7 @@ Production-grade CloudWatch metrics dashboard built on ECS Fargate, with Terrafo
 
 ## Architecture
 
-![Architecture Diagram](docs/devops-dashboard-architecture.svg)
+![Architecture Diagram](docs/architecture-v2.svg)
 
 ## Tech Stack
 
