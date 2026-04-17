@@ -7,7 +7,7 @@ from sqlalchemy import inspect
 def create_app():
     """
     Application factory pattern.
-    Creates and configures a new Flask instance each time it's called.
+    Creates and configures a new Flask instance each time it is called.
     """
     app = Flask(__name__)
     app.config.from_object(Config)
